@@ -1,18 +1,36 @@
 package ru.semwai.android_exam
 
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Telephony
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import java.util.jar.Manifest
 
 private const val SMS_REQUEST = 1
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var mService: MyRandomService
+    private var mBound: Boolean = false
+
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder = service as MyRandomService.LocalBinder
+            mService = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            mBound = false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,6 +47,27 @@ class MainActivity : AppCompatActivity() {
             addAction("android.provider.Telephony.SMS_RECEIVED")
         }
         registerReceiver(sr, sFilter)
+
+        val textView = findViewById<TextView>(R.id.textView)
+        textView.setOnClickListener {
+            if (mBound) {
+                val num = mService.randomNumber
+                textView.text = "random number: $num"
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Intent(this, MyRandomService::class.java).also {
+            bindService(it, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService(connection)
+        mBound = false
     }
 
     override fun onRequestPermissionsResult(

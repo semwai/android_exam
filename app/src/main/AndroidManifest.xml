@@ -12,10 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Android_exam">
+        <service
+            android:name=".MyRandomService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <receiver
             android:name=".MySMSReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
         <receiver
             android:name=".MyBatteryReceiver"
             android:enabled="true"

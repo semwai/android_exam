@@ -12,7 +12,7 @@ class MySMSReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-        
+
         if (intent.action.equals("android.provider.Telephony.SMS_RECEIVED")) {
             val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
             for (text in messages)
