@@ -3,12 +3,17 @@ package ru.semwai.android_exam
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.ServiceTestRule
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.any
-
+import androidx.test.uiautomator.UiDevice
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -44,4 +49,14 @@ class ExampleInstrumentedTest {
         assertThat(service.randomNumber, `is`(any(Int::class.java)))
     }
 
+    @get:Rule
+    val activityRule = ActivityTestRule(MainActivity::class.java)
+
+    @Test
+    fun testFirst() {
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).setOrientationNatural()
+
+        Espresso.onView(ViewMatchers.withId(R.id.textView)).perform(ViewActions.click())
+        Thread.sleep(5000)
+    }
 }
